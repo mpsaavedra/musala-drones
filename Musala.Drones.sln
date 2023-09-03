@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0F9A0B91-B589-40A1-AEFF-090E2ECDC349}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musala.Drones.Domain", "src\Domain\Musala.Drones.Domain.csproj", "{5F355ADE-91AF-4FB8-8131-F92F858043B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musala.Drones.BuildingBlocks", "src\BuildingBlocks\Musala.Drones.BuildingBlocks.csproj", "{2D11D0BE-AACA-4B98-8B3F-716EF1B71DE5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F355ADE-91AF-4FB8-8131-F92F858043B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F355ADE-91AF-4FB8-8131-F92F858043B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F355ADE-91AF-4FB8-8131-F92F858043B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F355ADE-91AF-4FB8-8131-F92F858043B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D11D0BE-AACA-4B98-8B3F-716EF1B71DE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D11D0BE-AACA-4B98-8B3F-716EF1B71DE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D11D0BE-AACA-4B98-8B3F-716EF1B71DE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D11D0BE-AACA-4B98-8B3F-716EF1B71DE5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5F355ADE-91AF-4FB8-8131-F92F858043B2} = {0F9A0B91-B589-40A1-AEFF-090E2ECDC349}
+		{2D11D0BE-AACA-4B98-8B3F-716EF1B71DE5} = {0F9A0B91-B589-40A1-AEFF-090E2ECDC349}
+	EndGlobalSection
+EndGlobal
