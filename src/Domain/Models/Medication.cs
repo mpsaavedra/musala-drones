@@ -5,6 +5,7 @@ namespace Musala.Drones.Domain.Models;
 
 public class Medication : BusinessEntity
 {
+
     [JsonPropertyName("name")]
     public string Name { get; set; }
     

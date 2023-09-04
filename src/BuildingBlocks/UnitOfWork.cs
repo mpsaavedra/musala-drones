@@ -69,7 +69,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>
         catch (Exception exception)
         {
             await CloseTransactionAsync();
-            throw;
+            throw new Exception(exception.Message);
         }
 
         return result;
