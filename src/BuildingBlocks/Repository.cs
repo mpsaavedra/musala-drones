@@ -19,7 +19,7 @@ public interface IRepository<TEntity, TContext>
     
     IQueryable<TEntity> Query => Context.Set<TEntity>();
     
-    Task<int> Create(TEntity entity, CancellationToken cancellationToken);
+    Task<int> Create(TEntity entity, CancellationToken cancellationToken = default);
     
     Task<bool> Update(int id, TEntity entity, CancellationToken cancellationToken = default);
     
