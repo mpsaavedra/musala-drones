@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks\Musala.Drones.BuildingBlocks.csproj" />
+  </ItemGroup>
+
 </Project>
