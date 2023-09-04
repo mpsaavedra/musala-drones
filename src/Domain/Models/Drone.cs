@@ -21,4 +21,6 @@ public class Drone : BusinessEntity
     
     [JsonPropertyName("state")]
     public DroneState State { get; set; } = DroneState.Idle;
+
+    public virtual ICollection<DroneCharge> DroneCharges { get; set; } = new HashSet<DroneCharge>();
 }

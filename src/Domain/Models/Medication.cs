@@ -16,4 +16,6 @@ public class Medication : BusinessEntity
     
     [JsonPropertyName("image")]
     public string Image { get; set; }
+    
+    public virtual ICollection<MedicationCharge> MedicationCharges { get; set; }
 }

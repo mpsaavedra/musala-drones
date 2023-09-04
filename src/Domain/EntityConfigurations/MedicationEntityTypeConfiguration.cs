@@ -17,5 +17,8 @@ public class MedicationEntityTypeConfiguration :
         builder.Property(x => x.Image).IsRequired();
         builder.HasIndex(x => x.Name);
         builder.HasIndex(x => x.Code);
+        builder.HasMany(x => x.MedicationCharges)
+            .WithOne(x => x.Medication)
+            .HasForeignKey(x => x.MedicationId);
     }
 }

@@ -17,5 +17,8 @@ public class DroneEntityTypeConfiguration :
         builder.Property(x => x.BatteryCapacity).IsRequired();
         builder.Property(x => x.State).IsRequired();
         builder.HasIndex(x => x.SerialNumber).IsUnique();
+        builder.HasMany<DroneCharge>(x => x.DroneCharges)
+            .WithOne(x => x.Drone)
+            .HasForeignKey(x => x.DroneId);
     }
 }
