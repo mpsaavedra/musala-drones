@@ -10,7 +10,7 @@ public class Medication : BusinessEntity
     public string Name { get; set; }
     
     [JsonPropertyName("weight")]
-    public int Weight { get; set; }
+    public float Weight { get; set; }
     
     [JsonPropertyName("code")]
     public string Code { get; set; }
