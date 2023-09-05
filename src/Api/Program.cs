@@ -1,25 +1,27 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Musala.Drones.Api.Data;
 using Musala.Drones.Api.Repositories;
 using Musala.Drones.Api.Services;
 using Musala.Drones.Api.Settings;
-using Musala.Drones.Domain.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var dbSettings = builder.Configuration.Get<DbSettings>();
+var appSettings = builder.Configuration.Get<AppSettings>();
+var inMemoryDb = builder.Configuration.GetConnectionString("DefaultConnection");
+var postgresDb = builder.Configuration.GetConnectionString("PostgresConnection");
 
-// Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(cfg =>
 {
-    if (dbSettings.UseInMemory)
-    {
-        cfg.UseInMemoryDatabase(dbSettings.InMemoryDbName);
-    }
+    if (appSettings.UseInMemoryDb)
+        cfg.EnableSensitiveDataLogging().UseInMemoryDatabase(inMemoryDb);
     else
-    {
-        cfg.UseNpgsql(dbSettings.PostgreSqlConnectionString);
-    }
+        cfg.EnableSensitiveDataLogging().UseNpgsql(postgresDb, opts =>
+        {
+            opts.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name);
+            opts.EnableRetryOnFailure(10, TimeSpan.FromSeconds(10.0), null);
+        });
 });
+
 builder.Services
     .AddTransient<IUnitOfWork, UnitOfWork>()
     .AddTransient<IDroneRepository, DroneRepository>()
@@ -43,8 +45,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.SeedData();
 
 app.Run();

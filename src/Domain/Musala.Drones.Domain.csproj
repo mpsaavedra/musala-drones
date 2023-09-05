@@ -9,5 +9,9 @@
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks\Musala.Drones.BuildingBlocks.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+  </ItemGroup>
 
 </Project>
