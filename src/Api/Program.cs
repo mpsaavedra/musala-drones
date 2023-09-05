@@ -4,6 +4,7 @@ using Musala.Drones.Api.Data;
 using Musala.Drones.Api.Repositories;
 using Musala.Drones.Api.Services;
 using Musala.Drones.Api.Settings;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 var appSettings = builder.Configuration.Get<AppSettings>();
@@ -21,7 +22,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(cfg =>
             opts.EnableRetryOnFailure(10, TimeSpan.FromSeconds(10.0), null);
         });
 });
-
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services
     .AddTransient<IUnitOfWork, UnitOfWork>()
     .AddTransient<IDroneRepository, DroneRepository>()
