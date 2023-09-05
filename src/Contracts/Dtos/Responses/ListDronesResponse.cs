@@ -1,6 +1,6 @@
-using Musala.Drones.Domain.Enums;
+using Musala.Drones.Contracts.Enums;
 
-namespace Musala.Drones.Domain.Dtos.Responses;
+namespace Musala.Drones.Contracts.Dtos.Responses;
 
 public class ListDronesResponse : BaseResponse
 {

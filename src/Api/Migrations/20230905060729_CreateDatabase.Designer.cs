@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Musala.Drones.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230904230924_InitialCreation")]
-    partial class InitialCreation
+    [Migration("20230905060729_CreateDatabase")]
+    partial class CreateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

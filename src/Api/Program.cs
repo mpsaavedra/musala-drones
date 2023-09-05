@@ -52,6 +52,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.SeedData();
+DbSeeder.SeedData(app.Services);
 
 app.Run();

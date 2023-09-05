@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Musala.Drones.BuildingBlocks;
-using Musala.Drones.Domain.Enums;
+using Musala.Drones.Contracts.Enums;
 
 namespace Musala.Drones.Domain.Models;
 

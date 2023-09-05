@@ -1,13 +1,13 @@
-using Musala.Drones.Domain.Enums;
+using Musala.Drones.Contracts.Enums;
 using Musala.Drones.Domain.Models;
 
 namespace Musala.Drones.Api.Data;
 
 public static class DbSeeder
 {
-    public static void SeedData(this WebApplication app)
+    public static void SeedData(IServiceProvider serviceProvider)
     {
-        using var scope = app.Services.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         if (context.Drones.Any()) return;
@@ -146,28 +146,58 @@ public static class DbSeeder
 
         #endregion
 
-        #region Drone charge register
+        // #region Drone charge register
+        //
+        // var droneCharge1 = context.DroneCharges.Add(new DroneCharge { Drone = drone1 }).Entity;
+        //
+        // var droneCharge2 = context.DroneCharges.Add(new DroneCharge { Drone = drone2 }).Entity;
+        //
+        // context.SaveChanges();
+        //
+        // #endregion
+        //
+        // #region Medication Charge register
+        //
+        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine1 });
+        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine2 });
+        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine3 });
+        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine4 });
+        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine5 });
+        //
+        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge2, Medication = medicine3 });
+        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge2, Medication = medicine4 });
+        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge2, Medication = medicine10 });
+        //
+        // context.SaveChanges();
+        //
+        // #endregion
 
-        var droneCharge1 = context.DroneCharges.Add(new DroneCharge { Drone = drone1 }).Entity;
+        #region Load drones
 
-        var droneCharge2 = context.DroneCharges.Add(new DroneCharge { Drone = drone2 }).Entity;
-
+        drone1.DroneCharges.Add(new DroneCharge
+        {
+            MedicationCharges = new List<MedicationCharge>
+            {
+                new() { Medication = medicine1 },
+                new() { Medication = medicine2 },
+                new() { Medication = medicine3 },
+                new() { Medication = medicine4 },
+                new() { Medication = medicine5 },
+            }
+        });
+        context.Update(drone1);
         context.SaveChanges();
 
-        #endregion
-
-        #region Medication Charge register
-
-        context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine1 });
-        context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine2 });
-        context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine3 });
-        context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine4 });
-        context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine5 });
-        
-        context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge2, Medication = medicine3 });
-        context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge2, Medication = medicine4 });
-        context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge2, Medication = medicine10 });
-
+        drone2.DroneCharges.Add(new DroneCharge
+        {
+            MedicationCharges = new List<MedicationCharge>
+            {
+                new() { Medication = medicine3 },
+                new() { Medication = medicine4 },
+                new() { Medication = medicine10 },
+            }
+        });
+        context.Update(drone2);
         context.SaveChanges();
 
         #endregion

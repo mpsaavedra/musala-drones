@@ -1,6 +1,6 @@
-using Musala.Drones.Domain.Enums;
+using Musala.Drones.Contracts.Enums;
 
-namespace Musala.Drones.Domain.Dtos.Requests;
+namespace Musala.Drones.Contracts.Dtos.Requests;
 
 public class RegisterDroneRequest
 {

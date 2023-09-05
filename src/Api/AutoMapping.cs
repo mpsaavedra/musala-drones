@@ -1,4 +1,4 @@
-using Musala.Drones.Domain.Dtos.Responses;
+using Musala.Drones.Contracts.Dtos.Responses;
 using Musala.Drones.Domain.Models;
 
 namespace Musala.Drones.Api;

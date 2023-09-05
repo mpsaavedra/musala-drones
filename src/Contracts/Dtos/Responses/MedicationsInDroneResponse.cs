@@ -1,4 +1,4 @@
-namespace Musala.Drones.Domain.Dtos.Responses;
+namespace Musala.Drones.Contracts.Dtos.Responses;
 
 public class MedicationsInDroneResponse : BaseResponse
 {

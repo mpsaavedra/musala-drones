@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Musala.Drones.Api.Repositories;
 using Musala.Drones.Api.Services;
-using Musala.Drones.Domain.Dtos.Requests;
-using Musala.Drones.Domain.Dtos.Responses;
+using Musala.Drones.Contracts.Dtos.Requests;
+using Musala.Drones.Contracts.Dtos.Responses;
 
 namespace Musala.Drones.Api.Controllers;
 
@@ -18,24 +17,24 @@ public class DispatchController : ControllerBase
         _dispatcher = dispatcher;
     }
 
-    [HttpGet("[action]")]
+    [HttpPost("[action]")]
     public ListDronesResponse ListDrones() => 
         _dispatcher.ListDrones();
 
-    [HttpGet("[action]")]
+    [HttpPost("[action]")]
     public ListMedicationsResponse ListMedications() => 
         _dispatcher.ListMedications();
 
-    [HttpGet("[action]")]
-    public MedicationsInDroneResponse MedicationsInDrone([FromQuery] MedicationsInDroneRequest request) =>
+    [HttpPost("[action]")]
+    public MedicationsInDroneResponse MedicationsInDrone([FromBody] MedicationsInDroneRequest request) =>
         _dispatcher.MedicationsInDrone(request);
 
-    [HttpGet("[action]")]
+    [HttpPost("[action]")]
     public AvailableDronesResponse AvailableDronesForLoading() =>
         _dispatcher.ListAvailableDronesForLoading();
 
-    [HttpGet("[action]")]
-    public BatteryLevelInDroneResponse BatteryLevelInDrone([FromQuery] BatteryLevelInDroneRequest request) =>
+    [HttpPost("[action]")]
+    public BatteryLevelInDroneResponse BatteryLevelInDrone([FromBody] BatteryLevelInDroneRequest request) =>
         _dispatcher.BatteryLevelOnDrone(request);
 
     [HttpPost("[action]")]

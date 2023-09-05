@@ -1,4 +1,4 @@
-namespace Musala.Drones.Domain.Enums;
+namespace Musala.Drones.Contracts.Enums;
 
 public enum DroneState : byte
 {

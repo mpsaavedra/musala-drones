@@ -1,8 +1,9 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Musala.Drones.Api.Repositories;
-using Musala.Drones.Domain.Dtos.Requests;
-using Musala.Drones.Domain.Dtos.Responses;
-using Musala.Drones.Domain.Enums;
+using Musala.Drones.Contracts.Dtos.Requests;
+using Musala.Drones.Contracts.Dtos.Responses;
+using Musala.Drones.Contracts.Enums;
 using Musala.Drones.Domain.Models;
 
 namespace Musala.Drones.Api.Services;
@@ -59,20 +60,35 @@ public class DispatcherService : IDispatcherService
         var result = new MedicationsInDroneResponse();
         try
         {
-            var drone = _droneRepository.Query.FirstOrDefault(x => x.SerialNumber.Equals(medicationsInDrone.SerialNumber));
+            var drone = _droneRepository.Query
+                .Include(x => x.DroneCharges)
+                .ThenInclude(x => x.MedicationCharges)
+                .ThenInclude(x => x.Medication)
+                .FirstOrDefault(x => x.SerialNumber.Equals(medicationsInDrone.SerialNumber));
+            
             if (drone == null)
             {
                 result.Success = false;
                 result.Message = $"Drone with serial number {medicationsInDrone.SerialNumber} is not registered";
+                return result;
             }
 
             if (drone.State == DroneState.Idle)
             {
                 result.Success = false;
                 result.Message = $"Drone with serial number {medicationsInDrone.SerialNumber} is not loaded";
+                return result;
             }
 
-            var medications = drone.DroneCharges.Last();
+            var loads = drone.DroneCharges;
+            if (loads.Count == 0)
+            {
+                result.Success = false;
+                result.Message = $"Drone with serial number {medicationsInDrone.SerialNumber} has not charges";
+                return result;
+            }
+            
+            var medications = loads.Last();
             foreach (var charge in medications.MedicationCharges)
             {
                 var medication = _mapper.Map<MedicationInDrone>(charge.Medication);

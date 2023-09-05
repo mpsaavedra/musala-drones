@@ -1,6 +1,4 @@
-using Musala.Drones.Domain.Dtos.Requests;
-
-namespace Musala.Drones.Domain.Dtos.Responses;
+namespace Musala.Drones.Contracts.Dtos.Responses;
 
 public class LoadDroneResponse : BaseResponse
 {
