@@ -63,6 +63,16 @@ public class DispatcherService : IDispatcherService
                 return result;
             }
 
+            if (drone.BatteryCapacity < 25)
+            {
+                if (drone.State == DroneState.Loading)
+                {
+                    result.Success = false;
+                    result.Message = $"Drone state could not be loading if battery level is under 25%";
+                    return result;
+                }
+            }
+
             var id = _droneRepository.Create(drone).Result;
             result.Id = id;
         }
