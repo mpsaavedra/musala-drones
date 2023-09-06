@@ -71,6 +71,13 @@ public class Repository<TEntity, TContext> :
         return await executionStrategy.ExecuteAsync<int>(async () =>
         {
             EntityEntry<TEntity> entityEntry = null;
+            if (Context.Database.ProviderName != null && Context.Database.ProviderName.Contains("InMemory"))
+            {
+                entityEntry = await Context.Set<TEntity>().AddAsync(entity, cancellationToken);
+                await Context.SaveChangesAsync(cancellationToken);
+                return await Task.FromResult(entityEntry.Entity.Id);
+            }
+
             using (var transaction = await Context.Database.BeginTransactionAsync(cancellationToken))
             {
                 try
@@ -107,6 +114,14 @@ public class Repository<TEntity, TContext> :
         var executionStrategy = Context.Database.CreateExecutionStrategy();
         return await executionStrategy.ExecuteAsync<bool>(async () =>
         {
+            if (Context.Database.ProviderName != null && Context.Database.ProviderName.Contains("InMemory"))
+            {
+                Context.Set<TEntity>().Update(entity);
+                Context.Entry<TEntity>(entity).Property("CreatedAt").IsModified = false;
+                var result = await Context.SaveChangesAsync(cancellationToken) > 0;
+                return result;
+            }
+            
             using (var transaction = Context.Database.BeginTransaction())
             {
                 try
@@ -145,6 +160,16 @@ public class Repository<TEntity, TContext> :
         var executionStrategy = Context.Database.CreateExecutionStrategy();
         return await executionStrategy.ExecuteAsync<bool>(async () =>
         {
+            if (Context.Database.ProviderName != null && Context.Database.ProviderName.Contains("InMemory"))
+            {
+                var entity = await Context.Set<TEntity>()
+                    .FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken);
+                if (entity == null) return false;
+                Context.Set<TEntity>().Remove(entity);
+                var result = await Context.SaveChangesAsync(cancellationToken) > 0;
+                return result;
+            }
+            
             using (var transaction = await Context.Database.BeginTransactionAsync(cancellationToken))
             {
                 try
