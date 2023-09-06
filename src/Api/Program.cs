@@ -5,6 +5,8 @@ using Musala.Drones.Api.Repositories;
 using Musala.Drones.Api.Services;
 using Musala.Drones.Api.Settings;
 using AutoMapper;
+using FluentValidation;
+using Musala.Drones.Api.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 var appSettings = builder.Configuration.Get<AppSettings>();
@@ -23,6 +25,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(cfg =>
         });
 });
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddValidatorsFromAssemblyContaining<DroneValidator>();
 builder.Services
     .AddTransient<IUnitOfWork, UnitOfWork>()
     .AddTransient<IDroneRepository, DroneRepository>()

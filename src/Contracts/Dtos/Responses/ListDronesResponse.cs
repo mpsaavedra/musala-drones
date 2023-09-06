@@ -9,6 +9,8 @@ public class ListDronesResponse : BaseResponse
 
 public class ListDrone
 {
+    public int Id { get; set; }
+    
     public string SerialNumber { get; set; }
     
     public float BatteryCapacity { get; set; }

@@ -146,32 +146,6 @@ public static class DbSeeder
 
         #endregion
 
-        // #region Drone charge register
-        //
-        // var droneCharge1 = context.DroneCharges.Add(new DroneCharge { Drone = drone1 }).Entity;
-        //
-        // var droneCharge2 = context.DroneCharges.Add(new DroneCharge { Drone = drone2 }).Entity;
-        //
-        // context.SaveChanges();
-        //
-        // #endregion
-        //
-        // #region Medication Charge register
-        //
-        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine1 });
-        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine2 });
-        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine3 });
-        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine4 });
-        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge1, Medication = medicine5 });
-        //
-        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge2, Medication = medicine3 });
-        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge2, Medication = medicine4 });
-        // context.MedicationCharges.Add(new MedicationCharge { DroneCharge = droneCharge2, Medication = medicine10 });
-        //
-        // context.SaveChanges();
-        //
-        // #endregion
-
         #region Load drones
 
         drone1.DroneCharges.Add(new DroneCharge

@@ -1,3 +1,4 @@
+using Musala.Drones.Contracts.Dtos.Requests;
 using Musala.Drones.Contracts.Dtos.Responses;
 using Musala.Drones.Domain.Models;
 
@@ -9,13 +10,13 @@ public class AutoMapping : AutoMapper.Profile
     {
         CreateMap<Drone, ListDrone>();
         CreateMap<Drone, AvailableDrones>();
+        CreateMap<Drone, RegisterDroneRequest>().ReverseMap();
         CreateMap<Drone, BatteryLevelInDroneResponse>()
             .ForMember(dst => dst.BatteryLevel, opts =>
-                opts.MapFrom(src => src.BatteryCapacity))
-            .ForMember(dst => dst.SerialNumber, opts =>
-                opts.MapFrom(src => src.SerialNumber));
-        
+                opts.MapFrom(src => src.BatteryCapacity));
+
         CreateMap<Medication, ListMedication>();
         CreateMap<Medication, MedicationInDrone>();
+        CreateMap<Medication, MedicationLoaded>();
     }
 }

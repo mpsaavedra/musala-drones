@@ -2,12 +2,7 @@ namespace Musala.Drones.Contracts.Dtos.Requests;
 
 public class LoadDroneRequest
 {
-    public string SerialNumber { get; set; }
+    public int Id { get; set; }
 
-    public List<MedicationLoad> Medications { get; set; } = new List<MedicationLoad>();
-}
-
-public class MedicationLoad
-{
-    public string Code { get; set; }
+    public ICollection<int> MedicationIds { get; set; } = new HashSet<int>();
 }
