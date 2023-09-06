@@ -22,6 +22,7 @@ public class DispatchController : ControllerBase
         _dispatcher.ListDrones();
 
     [HttpPost("[action]")]
+    // [ProducesResponseType()]
     public ListMedicationsResponse ListMedications() => 
         _dispatcher.ListMedications();
 

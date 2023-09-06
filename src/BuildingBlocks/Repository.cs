@@ -53,55 +53,117 @@ public class Repository<TEntity, TContext> :
 
     public async Task<int> Create(TEntity entity, CancellationToken cancellationToken = default)
     {
-        EntityEntry<TEntity> entityEntry;
-        if (UnitOfWork is null)
+        // EntityEntry<TEntity> entityEntry;
+        // if (UnitOfWork is null)
+        // {
+        //     entityEntry = await Context.Set<TEntity>().AddAsync(entity, cancellationToken);
+        //     await SaveChangesAsync(cancellationToken);
+        // }
+        // else
+        // {
+        //     await UnitOfWork.BeginTransactionAsync(cancellationToken);
+        //     entityEntry = await Context.Set<TEntity>().AddAsync(entity, cancellationToken);
+        //     await UnitOfWork.SaveChangesAsync(cancellationToken: cancellationToken);
+        // }
+        //
+        // return entityEntry.Entity.Id;
+        var executionStrategy = Context.Database.CreateExecutionStrategy();
+        return await executionStrategy.ExecuteAsync<int>(async () =>
         {
-            entityEntry = await Context.Set<TEntity>().AddAsync(entity, cancellationToken);
-            await SaveChangesAsync(cancellationToken);
-        }
-        else
-        {
-            await UnitOfWork.BeginTransactionAsync(cancellationToken);
-            entityEntry = await Context.Set<TEntity>().AddAsync(entity, cancellationToken);
-            await UnitOfWork.SaveChangesAsync(cancellationToken: cancellationToken);
-        }
-
-        return entityEntry.Entity.Id;
+            EntityEntry<TEntity> entityEntry = null;
+            using (var transaction = await Context.Database.BeginTransactionAsync(cancellationToken))
+            {
+                try
+                {
+                    entityEntry = await Context.Set<TEntity>().AddAsync(entity, cancellationToken);
+                    await Context.SaveChangesAsync(cancellationToken);
+                    await transaction.CommitAsync(cancellationToken);
+                    return await Task.FromResult(entityEntry.Entity.Id);
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    return 0;
+                }
+            }
+        });
     }
 
     public async Task<bool> Update(int id, TEntity entity, CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        if (UnitOfWork is null)
+        // cancellationToken.ThrowIfCancellationRequested();
+        //
+        // if (UnitOfWork is null)
+        // {
+        //     Context.Set<TEntity>().Update(entity);
+        //     Context.Entry<TEntity>(entity).Property("CreatedAt").IsModified = false;
+        //     return await SaveChangesAsync(cancellationToken) > 0;
+        // }
+        //
+        // await UnitOfWork.BeginTransactionAsync(cancellationToken);
+        // Context.Set<TEntity>().Update(entity);
+        // Context.Entry<TEntity>(entity).Property("CreatedAt").IsModified = false;
+        // return await UnitOfWork.SaveChangesAsync(cancellationToken: cancellationToken) > 0;
+        var executionStrategy = Context.Database.CreateExecutionStrategy();
+        return await executionStrategy.ExecuteAsync<bool>(async () =>
         {
-            Context.Set<TEntity>().Update(entity);
-            Context.Entry<TEntity>(entity).Property("CreatedAt").IsModified = false;
-            return await SaveChangesAsync(cancellationToken) > 0;
-        }
-
-        await UnitOfWork.BeginTransactionAsync(cancellationToken);
-        Context.Set<TEntity>().Update(entity);
-        Context.Entry<TEntity>(entity).Property("CreatedAt").IsModified = false;
-        return await UnitOfWork.SaveChangesAsync(cancellationToken: cancellationToken) > 0;
+            using (var transaction = Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    Context.Set<TEntity>().Update(entity);
+                    Context.Entry<TEntity>(entity).Property("CreatedAt").IsModified = false;
+                    var result = await Context.SaveChangesAsync(cancellationToken) > 0;
+                    await transaction.CommitAsync(cancellationToken);
+                    return result;
+                }
+                catch 
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    return false;
+                }
+            }
+        });
     }
 
     public async Task<bool> Delete(int id, CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-        var entity = await Context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken);
-        if (entity == null)
-            return false;
-
-        if (UnitOfWork is null)
+        // cancellationToken.ThrowIfCancellationRequested();
+        // var entity = await Context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken);
+        // if (entity == null)
+        //     return false;
+        //
+        // if (UnitOfWork is null)
+        // {
+        //     Context.Set<TEntity>().Remove(entity);
+        //     return await SaveChangesAsync(cancellationToken) > 0;
+        // }
+        //
+        // await UnitOfWork.BeginTransactionAsync(cancellationToken);
+        // Context.Set<TEntity>().Remove(entity);
+        // return await UnitOfWork.SaveChangesAsync(cancellationToken: cancellationToken) > 0;
+        var executionStrategy = Context.Database.CreateExecutionStrategy();
+        return await executionStrategy.ExecuteAsync<bool>(async () =>
         {
-            Context.Set<TEntity>().Remove(entity);
-            return await SaveChangesAsync(cancellationToken) > 0;
-        }
-
-        await UnitOfWork.BeginTransactionAsync(cancellationToken);
-        Context.Set<TEntity>().Remove(entity);
-        return await UnitOfWork.SaveChangesAsync(cancellationToken: cancellationToken) > 0;
+            using (var transaction = await Context.Database.BeginTransactionAsync(cancellationToken))
+            {
+                try
+                {
+                    var entity = await Context.Set<TEntity>()
+                        .FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken);
+                    if (entity == null) return false;
+                    Context.Set<TEntity>().Remove(entity);
+                    var result = await Context.SaveChangesAsync(cancellationToken) > 0;
+                    await transaction.CommitAsync(cancellationToken);
+                    return result;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    return false;
+                }
+            }
+        });
     }
 
     public Task<int> Count() => Query.CountAsync();

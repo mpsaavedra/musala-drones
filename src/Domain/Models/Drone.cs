@@ -26,4 +26,6 @@ public class Drone : BusinessEntity
     public DroneState State { get; set; } = DroneState.Idle;
 
     public virtual ICollection<DroneCharge> DroneCharges { get; set; } = new HashSet<DroneCharge>();
+
+    public virtual ICollection<BatteryAudit> BatteryAudits { get; set; } = new HashSet<BatteryAudit>();
 }

@@ -20,5 +20,8 @@ public class DroneEntityTypeConfiguration :
         builder.HasMany<DroneCharge>(x => x.DroneCharges)
             .WithOne(x => x.Drone)
             .HasForeignKey(x => x.DroneId);
+        builder.HasMany(x => x.BatteryAudits)
+            .WithOne(x => x.Drone)
+            .HasForeignKey(x => x.DroneId);
     }
 }

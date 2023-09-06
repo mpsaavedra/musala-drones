@@ -32,7 +32,11 @@ builder.Services
     .AddTransient<IDroneChargeRepository, DroneChargeRepository>()
     .AddTransient<IMedicationRepository, MedicationRepository>()
     .AddTransient<IMedicationChargeRepository, MedicationChargeRepository>()
-    .AddTransient<IDispatcherService, DispatcherService>();
+    .AddTransient<IBatteryAuditRepository, BatteryAuditRepository>()
+    .AddTransient<IDispatcherService, DispatcherService>()
+    .AddScoped<IBatteryCheckService, BatteryCheckService>()
+    .AddSingleton<BatteryCheckHostedService>();
+builder.Services.AddHostedService(prov => prov.GetRequiredService<BatteryCheckHostedService>());
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
