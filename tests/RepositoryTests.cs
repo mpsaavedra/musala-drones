@@ -25,7 +25,6 @@ public class RepositoryTests
         var repository = BuildRepository("Create");
         await repository.Create(new FakeDrone());
         await repository.Create(new FakeDrone());
-        await repository.UnitOfWork.SaveChangesAsync();
         
         (await repository.Count()).ShouldBe(2);
         (await repository.Any()).ShouldBeTrue();
@@ -37,7 +36,6 @@ public class RepositoryTests
         var repository = BuildRepository("Query");
         var code = "DRONE_CODE_001";
         await repository.Create(new FakeDrone { Code = code });
-        await repository.UnitOfWork.SaveChangesAsync();
         
         var drone = await repository.Query.FirstOrDefaultAsync(x => x.Code.Equals(code));
         
@@ -54,7 +52,6 @@ public class RepositoryTests
         var changed_code = "DRONE_CODE_002";
         var drone = new FakeDrone { Id = id, Code = code };
         await repository.Create(drone);
-        await repository.UnitOfWork.SaveChangesAsync();
         drone = await repository.GetEntity<FakeDrone>().FirstOrDefaultAsync(x => x.Id == id);
         
         drone.ShouldNotBeNull();
@@ -75,11 +72,9 @@ public class RepositoryTests
         await repository.Create(new FakeDrone { Id = 1 });
         await repository.Create(new FakeDrone ());
         await repository.Create(new FakeDrone ());
-        await repository.UnitOfWork.SaveChangesAsync();
         
         (await repository.Count()).ShouldBe(3);
         await repository.Delete(1);
-        await repository.UnitOfWork.SaveChangesAsync();
         
         (await repository.Count()).ShouldBe(2);
     }

@@ -28,8 +28,6 @@ public interface IRepository<TEntity, TContext>
     Task<int> Count();
     
     Task<bool> Any();
-
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
 
 public class Repository<TEntity, TContext> :
@@ -53,22 +51,7 @@ public class Repository<TEntity, TContext> :
 
     public async Task<int> Create(TEntity entity, CancellationToken cancellationToken = default)
     {
-        // EntityEntry<TEntity> entityEntry;
-        // if (UnitOfWork is null)
-        // {
-        //     entityEntry = await Context.Set<TEntity>().AddAsync(entity, cancellationToken);
-        //     await SaveChangesAsync(cancellationToken);
-        // }
-        // else
-        // {
-        //     await UnitOfWork.BeginTransactionAsync(cancellationToken);
-        //     entityEntry = await Context.Set<TEntity>().AddAsync(entity, cancellationToken);
-        //     await UnitOfWork.SaveChangesAsync(cancellationToken: cancellationToken);
-        // }
-        //
-        // return entityEntry.Entity.Id;
-        var executionStrategy = Context.Database.CreateExecutionStrategy();
-        return await executionStrategy.ExecuteAsync<int>(async () =>
+        return await UnitOfWork.ExecuteAsync<int>(async () =>
         {
             EntityEntry<TEntity> entityEntry = null;
             if (Context.Database.ProviderName != null && Context.Database.ProviderName.Contains("InMemory"))
@@ -93,26 +76,12 @@ public class Repository<TEntity, TContext> :
                     return 0;
                 }
             }
-        });
+        }, cancellationToken);
     }
 
     public async Task<bool> Update(int id, TEntity entity, CancellationToken cancellationToken = default)
     {
-        // cancellationToken.ThrowIfCancellationRequested();
-        //
-        // if (UnitOfWork is null)
-        // {
-        //     Context.Set<TEntity>().Update(entity);
-        //     Context.Entry<TEntity>(entity).Property("CreatedAt").IsModified = false;
-        //     return await SaveChangesAsync(cancellationToken) > 0;
-        // }
-        //
-        // await UnitOfWork.BeginTransactionAsync(cancellationToken);
-        // Context.Set<TEntity>().Update(entity);
-        // Context.Entry<TEntity>(entity).Property("CreatedAt").IsModified = false;
-        // return await UnitOfWork.SaveChangesAsync(cancellationToken: cancellationToken) > 0;
-        var executionStrategy = Context.Database.CreateExecutionStrategy();
-        return await executionStrategy.ExecuteAsync<bool>(async () =>
+        return await UnitOfWork.ExecuteAsync<bool>(async () =>
         {
             if (Context.Database.ProviderName != null && Context.Database.ProviderName.Contains("InMemory"))
             {
@@ -138,27 +107,12 @@ public class Repository<TEntity, TContext> :
                     return false;
                 }
             }
-        });
+        }, cancellationToken);
     }
 
     public async Task<bool> Delete(int id, CancellationToken cancellationToken = default)
     {
-        // cancellationToken.ThrowIfCancellationRequested();
-        // var entity = await Context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken);
-        // if (entity == null)
-        //     return false;
-        //
-        // if (UnitOfWork is null)
-        // {
-        //     Context.Set<TEntity>().Remove(entity);
-        //     return await SaveChangesAsync(cancellationToken) > 0;
-        // }
-        //
-        // await UnitOfWork.BeginTransactionAsync(cancellationToken);
-        // Context.Set<TEntity>().Remove(entity);
-        // return await UnitOfWork.SaveChangesAsync(cancellationToken: cancellationToken) > 0;
-        var executionStrategy = Context.Database.CreateExecutionStrategy();
-        return await executionStrategy.ExecuteAsync<bool>(async () =>
+        return await UnitOfWork.ExecuteAsync(async () =>
         {
             if (Context.Database.ProviderName != null && Context.Database.ProviderName.Contains("InMemory"))
             {
@@ -188,16 +142,10 @@ public class Repository<TEntity, TContext> :
                     return false;
                 }
             }
-        });
+        }, cancellationToken);
     }
 
     public Task<int> Count() => Query.CountAsync();
 
     public Task<bool> Any() => Query.AnyAsync();
-
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        // TODO: implement the business entity data update
-        return await Context.SaveChangesAsync(cancellationToken);
-    }
 }
