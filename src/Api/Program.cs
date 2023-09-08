@@ -16,7 +16,9 @@ var postgresDb = builder.Configuration.GetConnectionString("PostgresConnection")
 builder.Services.AddDbContext<ApplicationDbContext>(cfg =>
 {
     if (appSettings.UseInMemoryDb)
-        cfg.EnableSensitiveDataLogging().UseInMemoryDatabase(inMemoryDb);
+        cfg
+            // .EnableSensitiveDataLogging()
+            .UseInMemoryDatabase(inMemoryDb!);
     else
         cfg.EnableSensitiveDataLogging().UseNpgsql(postgresDb, opts =>
         {

@@ -22,7 +22,6 @@ public class DispatchController : ControllerBase
         _dispatcher.ListDrones();
 
     [HttpPost("[action]")]
-    // [ProducesResponseType()]
     public ListMedicationsResponse ListMedications() => 
         _dispatcher.ListMedications();
 
@@ -45,6 +44,10 @@ public class DispatchController : ControllerBase
     [HttpPost("[action]")]
     public RegisterDroneResponse RegisterDrone([FromBody] RegisterDroneRequest request) =>
         _dispatcher.RegisterDrone(request);
+
+    [HttpPost("[action]")]
+    public DroneHasDeliveredResponse DroneHasDelivered([FromBody] DroneHasDeliveredRequest request) =>
+        _dispatcher.DroneHasDelivered(request);
 
 
 }

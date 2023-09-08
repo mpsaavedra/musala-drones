@@ -56,6 +56,10 @@ $ dotnet test
 
 All tests that require database access used an in __In-Memory__ database, that is prepopulated by the same Database seeder that populate the project.
 
+### Test using Hub application
+
+The application in the Hub directory provides a simple simulation process of communication with drones to query for battery level, **THIS APP IS NOT FULLY TESTED**
+so you could run the Api application and the the Hub application and both interact to retrieve the battery levels.
 
 ## Project structure and design
 

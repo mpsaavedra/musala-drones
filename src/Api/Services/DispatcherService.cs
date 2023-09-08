@@ -25,6 +25,8 @@ public interface IDispatcherService
     ListDronesResponse ListDrones();
 
     ListMedicationsResponse ListMedications();
+
+    DroneHasDeliveredResponse DroneHasDelivered(DroneHasDeliveredRequest request);
 }
 
 public class DispatcherService : IDispatcherService
@@ -35,10 +37,12 @@ public class DispatcherService : IDispatcherService
     private readonly IMedicationRepository _medicationRepository;
     private readonly IMedicationChargeRepository _medicationChargeRepository;
     private readonly IValidator<Drone> _droneValidator;
+    private readonly ILogger<DispatcherService> _logger;
 
     public DispatcherService(IMapper mapper, IDroneRepository droneRepository, 
         IDroneChargeRepository droneChargeRepository, IMedicationRepository medicationRepository, 
-        IMedicationChargeRepository medicationChargeRepository, IValidator<Drone> droneValidator)
+        IMedicationChargeRepository medicationChargeRepository, IValidator<Drone> droneValidator,
+        ILogger<DispatcherService> logger)
     {
         _mapper = mapper;
         _droneRepository = droneRepository;
@@ -46,10 +50,12 @@ public class DispatcherService : IDispatcherService
         _medicationRepository = medicationRepository;
         _medicationChargeRepository = medicationChargeRepository;
         _droneValidator = droneValidator;
+        _logger = logger;
     }
 
     public RegisterDroneResponse RegisterDrone(RegisterDroneRequest register)
     {
+        _logger.LogInformation("RegisterDrone");
         var result = new RegisterDroneResponse();
 
         try
@@ -87,6 +93,7 @@ public class DispatcherService : IDispatcherService
 
     public LoadDroneResponse LoadDrone(LoadDroneRequest loadDrone)
     {
+        _logger.LogInformation("LoadDrone");
         var result = new LoadDroneResponse();
 
         try
@@ -148,6 +155,8 @@ public class DispatcherService : IDispatcherService
                 MedicationCharges = medications
             });
             
+            drone.State = DroneState.Delivering;
+            
             var res = _droneRepository.Update(drone.Id, drone).Result;
             if (!res)
             {
@@ -167,6 +176,7 @@ public class DispatcherService : IDispatcherService
 
     public MedicationsInDroneResponse MedicationsInDrone(MedicationsInDroneRequest medicationsInDrone)
     {
+        _logger.LogInformation("MedicationsInDrone");
         var result = new MedicationsInDroneResponse();
         try
         {
@@ -216,6 +226,7 @@ public class DispatcherService : IDispatcherService
 
     public AvailableDronesResponse ListAvailableDronesForLoading()
     {
+        _logger.LogInformation("ListAvailableDronesForLoading");
         var result = new AvailableDronesResponse();
         try
         {
@@ -237,6 +248,7 @@ public class DispatcherService : IDispatcherService
 
     public BatteryLevelInDroneResponse BatteryLevelOnDrone(BatteryLevelInDroneRequest batteryLevel)
     {
+        _logger.LogInformation("BatteryLevelInDrone");
         var result = new BatteryLevelInDroneResponse();
         try
         {
@@ -261,6 +273,7 @@ public class DispatcherService : IDispatcherService
 
     public ListDronesResponse ListDrones()
     {
+        _logger.LogInformation("ListDrone");
         var result = new ListDronesResponse();
         try
         {
@@ -280,6 +293,7 @@ public class DispatcherService : IDispatcherService
 
     public ListMedicationsResponse ListMedications()
     {
+        _logger.LogInformation("ListMedications");
         var result = new ListMedicationsResponse();
         try
         {
@@ -294,6 +308,56 @@ public class DispatcherService : IDispatcherService
             result.Success = false;
             result.Message = e.Message;
         }
+        return result;
+    }
+
+    public DroneHasDeliveredResponse DroneHasDelivered(DroneHasDeliveredRequest request)
+    {
+        _logger.LogInformation("DroneHasDelivered");
+        var result = new DroneHasDeliveredResponse();
+        try
+        {
+            var drone = _droneRepository.GetEntity<Drone>()
+                .Include(x => x.DroneCharges)
+                .ThenInclude(x => x.MedicationCharges)
+                .FirstOrDefault(x => x.Id == request.Id);
+            
+            if (drone == null)
+            {
+                result.Success = false;
+                result.Message = $"drone with id {request.Id} is not registered";
+                _logger.LogError($"drone with id {request.Id} is not registered");
+                return result;
+            }
+
+            if (drone.State == DroneState.Idle)
+            {
+                result.Success = false;
+                result.Message = $"drone {request.Id} has not been loaded";
+                _logger.LogError($"drone {request.Id} has not been loaded");
+                return result;
+            }
+
+            if (drone.DroneCharges.Count == 0)
+            {
+                result.Success = false;
+                result.Message = $"drone {request.Id} has never been loaded";
+                _logger.LogError($"drone {request.Id} has never been loaded");
+                return result;
+            }
+
+            drone.State = DroneState.Idle;
+            // drone.BatteryCapacity = 100; // supposedly recharge when arrive
+            _logger.LogDebug($"drone with id {drone.Id} has delivered and arrived");
+            _droneRepository.Update(drone.Id, drone);
+        }
+        catch (Exception e)
+        {
+            result.Success = false;
+            result.Message = e.Message;
+            _logger.LogError(e.Message);
+        }
+
         return result;
     }
 }

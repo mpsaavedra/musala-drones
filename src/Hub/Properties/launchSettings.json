@@ -1,0 +1,13 @@
+﻿{
+  "profiles": {
+    "Musala.Drones.Hub": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5027;https://localhost:7090",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "Musala.Drones.Hub";
+
+package drones;
+
+service DronesHub {
+  rpc GetDroneStatus(DroneStatusRequest) returns (DroneStatusResponse);
+}
+
+// get a drone status
+message DroneStatusRequest {
+  int32 id = 1; // id of the drone
+}
+
+// return drone status
+message DroneStatusResponse {
+  int32 state = 1;    // state IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING
+  int64 battery = 2;  // battery percentage
+}
